@@ -29,6 +29,7 @@ public class AlunoServiceTest {
 	private AlunoService alunoService;
 
 	private Aluno aluno;
+	private InformacoesContato informacoesContato;
 
 	@BeforeEach
 	public void setUp() {
@@ -37,6 +38,7 @@ public class AlunoServiceTest {
 		InformacoesContato contato = new InformacoesContato();
 		contato.setTelefone("11999999999");
 		contato.setWhatsapp("11999999999");
+		contato.setEndereco("Alameda um");
 		contato.setNumero("123");
 		contato.setBairro("Centro");
 		contato.setEstado("SP");
