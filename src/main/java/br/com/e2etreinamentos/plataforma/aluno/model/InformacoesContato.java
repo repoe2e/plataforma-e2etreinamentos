@@ -14,40 +14,44 @@ import lombok.Setter;
 @Entity
 public class InformacoesContato {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotBlank(message = "Telefone é obrigatório.")
-    @Column(name = "telefone")
-    private String telefone;
+	@NotBlank(message = "Telefone é obrigatório.")
+	@Column(name = "telefone")
+	private String telefone;
 
-    @NotBlank(message = "Whatsapp é obrigatório.")
-    @Column(name = "whatsapp")
-    private String whatsapp;
+	@NotBlank(message = "Whatsapp é obrigatório.")
+	@Column(name = "whatsapp")
+	private String whatsapp;
 
-    @NotBlank(message = "Número é obrigatório.")
-    @Column(name = "numero")
-    private String numero;
+	@NotBlank(message = "Endereço é obrigatório.")
+	@Column(name = "endereco")
+	private String endereco;
 
-    @Column(name = "complemento")
-    private String complemento;
+	@NotBlank(message = "Número é obrigatório.")
+	@Column(name = "numero")
+	private String numero;
 
-    @NotBlank(message = "Bairro é obrigatório.")
-    @Column(name = "bairro")
-    private String bairro;
+	@Column(name = "complemento")
+	private String complemento;
 
-    @NotBlank(message = "Estado é obrigatório.")
-    @Column(name = "estado")
-    private String estado;
+	@NotBlank(message = "Bairro é obrigatório.")
+	@Column(name = "bairro")
+	private String bairro;
 
-    @NotBlank(message = "Cidade é obrigatória.")
-    @Column(name = "cidade")
-    private String cidade;
+	@NotBlank(message = "Estado é obrigatório.")
+	@Column(name = "estado")
+	private String estado;
 
-    @NotBlank(message = "CEP é obrigatório.")
-    @Column(name = "cep")
-    private String cep;
+	@NotBlank(message = "Cidade é obrigatória.")
+	@Column(name = "cidade")
+	private String cidade;
 
-    // Construtores e getters/setters omitidos por brevidade
+	@NotBlank(message = "CEP é obrigatório.")
+	@Column(name = "cep")
+	private String cep;
+
+	// Construtores e getters/setters omitidos por brevidade
 }

@@ -88,44 +88,50 @@ public class AlunoService {
 
 		// Verificar se Informações de Contato não são nulas primeiro
 		if (aluno.getInformacoesContato() == null) {
-		    throw new IllegalArgumentException("Informações de contato são obrigatórias.");
+			throw new IllegalArgumentException("Informações de contato são obrigatórias.");
 		}
 
-		// Agora, pode acessar os atributos de Informações de Contato sem risco de NullPointerException
+		// Agora, pode acessar os atributos de Informações de Contato sem risco de
+		// NullPointerException
 		if (aluno.getInformacoesContato().getTelefone() == null
-		        || aluno.getInformacoesContato().getTelefone().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Telefone é obrigatório.");
+				|| aluno.getInformacoesContato().getTelefone().trim().isEmpty()) {
+			throw new IllegalArgumentException("Telefone é obrigatório.");
 		}
 
 		if (aluno.getInformacoesContato().getWhatsapp() == null
-		        || aluno.getInformacoesContato().getWhatsapp().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Whatsapp é obrigatório.");
+				|| aluno.getInformacoesContato().getWhatsapp().trim().isEmpty()) {
+			throw new IllegalArgumentException("Whatsapp é obrigatório.");
+		}
+
+		if (aluno.getInformacoesContato().getEndereco() == null
+				|| aluno.getInformacoesContato().getEndereco().trim().isEmpty()) {
+			throw new IllegalArgumentException("Endereço é obrigatório.");
 		}
 
 		if (aluno.getInformacoesContato().getNumero() == null
-		        || aluno.getInformacoesContato().getNumero().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Número é obrigatório.");
+				|| aluno.getInformacoesContato().getNumero().trim().isEmpty()) {
+			throw new IllegalArgumentException("Número é obrigatório.");
 		}
 
 		if (aluno.getInformacoesContato().getBairro() == null
-		        || aluno.getInformacoesContato().getBairro().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Bairro é obrigatório.");
+				|| aluno.getInformacoesContato().getBairro().trim().isEmpty()) {
+			throw new IllegalArgumentException("Bairro é obrigatório.");
 		}
 
 		if (aluno.getInformacoesContato().getEstado() == null
-		        || aluno.getInformacoesContato().getEstado().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Estado é obrigatório.");
+				|| aluno.getInformacoesContato().getEstado().trim().isEmpty()) {
+			throw new IllegalArgumentException("Estado é obrigatório.");
 		}
 
 		if (aluno.getInformacoesContato().getCidade() == null
-		        || aluno.getInformacoesContato().getCidade().trim().isEmpty()) {
-		    throw new IllegalArgumentException("Cidade é obrigatória.");
+				|| aluno.getInformacoesContato().getCidade().trim().isEmpty()) {
+			throw new IllegalArgumentException("Cidade é obrigatória.");
 		}
 
 		// Verificar se o CEP é válido
 		if (aluno.getInformacoesContato().getCep() == null
-		        || !aluno.getInformacoesContato().getCep().matches("\\d{8}")) {
-		    throw new IllegalArgumentException("CEP inválido. Deve conter exatamente 8 dígitos numéricos.");
+				|| !aluno.getInformacoesContato().getCep().matches("\\d{8}")) {
+			throw new IllegalArgumentException("CEP inválido. Deve conter exatamente 8 dígitos numéricos.");
 		}
 
 		// Após todas as validações, salvar o aluno no banco
