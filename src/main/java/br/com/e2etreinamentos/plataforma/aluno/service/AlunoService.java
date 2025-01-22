@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.e2etreinamentos.plataforma.aluno.model.Aluno;
 import br.com.e2etreinamentos.plataforma.aluno.repository.AlunoRepository;
+import br.com.e2etreinamentos.plataforma.aluno.utils.CpfUtils;
 
 @Service
 @Transactional
@@ -20,117 +21,110 @@ public class AlunoService {
 	private AlunoRepository alunoRepository;
 
 	public Aluno cadastrarAluno(Aluno aluno) {
-
-		// Verificar se o nome completo é vazio ou nulo
-		if (aluno.getNomeCompleto() == null || aluno.getNomeCompleto().trim().isEmpty()) {
+		// Validação do Nome Completo
+		if (aluno.getNomeCompleto() == null || aluno.getNomeCompleto().trim().isEmpty()
+				|| !isValidName(aluno.getNomeCompleto())) {
 			throw new IllegalArgumentException("Nome completo é obrigatório.");
 		}
 
-		// Verificar se o CPF é válido (11 dígitos numéricos)
-		if (aluno.getCpf() == null || aluno.getCpf().length() != 11 || !aluno.getCpf().matches("\\d{11}")) {
+		// Validação do CPF
+		if (aluno.getCpf() == null || aluno.getCpf().length() != 11 || !aluno.getCpf().matches("\\d{11}")
+				|| !CpfUtils.isCpfValid(aluno.getCpf())) {
 			throw new IllegalArgumentException("CPF inválido. Deve conter exatamente 11 dígitos numéricos.");
 		}
-
-		// Verificar se o CPF já está cadastrado
 		if (alunoRepository.existsByCpf(aluno.getCpf())) {
 			throw new IllegalArgumentException("CPF já cadastrado.");
 		}
 
-		// Verificar se o e-mail é válido
+		// Validação do E-mail
 		if (aluno.getEmail() == null || aluno.getEmail().trim().isEmpty() || !isValidEmail(aluno.getEmail())) {
 			throw new IllegalArgumentException("E-mail inválido.");
 		}
-
-		// Verificar se o e-mail já está cadastrado
 		if (alunoRepository.existsByEmail(aluno.getEmail())) {
 			throw new IllegalArgumentException("E-mail já cadastrado.");
 		}
 
-		// Verificar se o RG é válido
+		// Validação do RG
 		if (aluno.getRg() == null || aluno.getRg().trim().isEmpty()) {
 			throw new IllegalArgumentException("RG é obrigatório.");
 		}
+		// Validação da formatação do RG
 
-		// Verificar se a data de nascimento é válida
-		if (aluno.getDataNascimento() == null) {
-			throw new IllegalArgumentException("Data de nascimento é obrigatória.");
+		if (!isValidRg(aluno.getRg())) {
+			throw new IllegalArgumentException("RG inválido. O formato esperado é 'XX.XXX.XXX-X'");
+
 		}
 
-		// Verificar o formato da data de nascimento e se é válida
-		if (!isValidDateFormat(aluno.getDataNascimento())) {
-			throw new IllegalArgumentException("Data de nascimento fora do padrão. Formato esperado: yyyy-MM-dd.");
-		}
-
-		// Verificar se a idade é menor que 12 anos
-		if (isMenorDeIdade(aluno.getDataNascimento())) {
+		// Validação da Data de Nascimento
+		if (aluno.getDataNascimento() == null || !isValidDateFormat(aluno.getDataNascimento())
+				|| aluno.getDataNascimento().isAfter(LocalDate.now()) || isMenorDeIdade(aluno.getDataNascimento())) {
 			throw new IllegalArgumentException("Não é possível cadastrar menores de 12 anos.");
 		}
 
-		// Verificar se a nacionalidade é válida
-		if (aluno.getNacionalidade() == null || aluno.getNacionalidade().trim().isEmpty()) {
+		// Validação da Nacionalidade
+		if (aluno.getNacionalidade() == null || aluno.getNacionalidade().trim().isEmpty()
+				|| !isValidText(aluno.getNacionalidade())) {
 			throw new IllegalArgumentException("Nacionalidade é obrigatória.");
 		}
 
-		// Verificar se a nacionalidade é válida
-		if (aluno.getNacionalidade() == null || aluno.getNacionalidade().trim().isEmpty()) {
-			throw new IllegalArgumentException("Nacionalidade é obrigatória.");
+		// Validação da Profissão
+		if (aluno.getProfissao() == null || aluno.getProfissao().trim().isEmpty()
+				|| !isValidText(aluno.getProfissao())) {
+			throw new IllegalArgumentException("Profissão obrigatória.");
 		}
 
-		// Verificar se a profissão é válida
-		if (aluno.getProfissao() == null || aluno.getProfissao().trim().isEmpty()) {
-			throw new IllegalArgumentException("Profissão é obrigatória.");
-		}
-
-		// Verificar se a formação acadêmica é válida
-		if (aluno.getFormacaoAcademica() == null || aluno.getFormacaoAcademica().trim().isEmpty()) {
+		// Validação da Formação Acadêmica
+		if (aluno.getFormacaoAcademica() == null || aluno.getFormacaoAcademica().trim().isEmpty()
+				|| !isValidText(aluno.getFormacaoAcademica())) {
 			throw new IllegalArgumentException("Formação acadêmica é obrigatória.");
 		}
 
-		// Verificar se Informações de Contato não são nulas primeiro
+		// Validação das Informações de Contato
 		if (aluno.getInformacoesContato() == null) {
 			throw new IllegalArgumentException("Informações de contato são obrigatórias.");
 		}
 
-		// Agora, pode acessar os atributos de Informações de Contato sem risco de
-		// NullPointerException
-		if (aluno.getInformacoesContato().getTelefone() == null
-				|| aluno.getInformacoesContato().getTelefone().trim().isEmpty()) {
-			throw new IllegalArgumentException("Telefone é obrigatório.");
+		// Validação do Telefone
+		if (!isValidPhone(aluno.getInformacoesContato().getTelefone())) {
+			throw new IllegalArgumentException("Telefone é obrigatório, formato (xx) xxxx-xxxx.");
 		}
 
-		if (aluno.getInformacoesContato().getWhatsapp() == null
-				|| aluno.getInformacoesContato().getWhatsapp().trim().isEmpty()) {
-			throw new IllegalArgumentException("Whatsapp é obrigatório.");
+		// Validação do WhatsApp
+		if (!isValidPhone(aluno.getInformacoesContato().getWhatsapp())) {
+			throw new IllegalArgumentException("WhatsApp é inválido, formato (xx) xxxxx-xxxx.");
 		}
 
+		// Validação do Endereço
 		if (aluno.getInformacoesContato().getEndereco() == null
 				|| aluno.getInformacoesContato().getEndereco().trim().isEmpty()) {
-			throw new IllegalArgumentException("Endereço é obrigatório.");
+			throw new IllegalArgumentException("Endereço inválido.");
 		}
 
+		// Validação do Número
 		if (aluno.getInformacoesContato().getNumero() == null
 				|| aluno.getInformacoesContato().getNumero().trim().isEmpty()) {
 			throw new IllegalArgumentException("Número é obrigatório.");
 		}
 
+		// Validação do Bairro
 		if (aluno.getInformacoesContato().getBairro() == null
 				|| aluno.getInformacoesContato().getBairro().trim().isEmpty()) {
 			throw new IllegalArgumentException("Bairro é obrigatório.");
 		}
 
-		if (aluno.getInformacoesContato().getEstado() == null
-				|| aluno.getInformacoesContato().getEstado().trim().isEmpty()) {
-			throw new IllegalArgumentException("Estado é obrigatório.");
+		// Validação do Estado
+		if (!isValidState(aluno.getInformacoesContato().getEstado())) {
+			throw new IllegalArgumentException("Estado inválido.");
 		}
 
+		// Validação da Cidade
 		if (aluno.getInformacoesContato().getCidade() == null
 				|| aluno.getInformacoesContato().getCidade().trim().isEmpty()) {
 			throw new IllegalArgumentException("Cidade é obrigatória.");
 		}
 
-		// Verificar se o CEP é válido
-		if (aluno.getInformacoesContato().getCep() == null
-				|| !aluno.getInformacoesContato().getCep().matches("\\d{8}")) {
+		// Validação do CEP
+		if (!isValidCep(aluno.getInformacoesContato().getCep())) {
 			throw new IllegalArgumentException("CEP inválido. Deve conter exatamente 8 dígitos numéricos.");
 		}
 
@@ -149,6 +143,14 @@ public class AlunoService {
 		}
 	}
 
+	private boolean isValidName(String name) {
+	    return name.matches("^[A-Za-zÀ-ÖØ-öø-ÿ]{2,}(\\s[A-Za-zÀ-ÖØ-öø-ÿ]{2,})+$");
+	}
+
+	private boolean isValidText(String text) {
+		return text.matches("[A-Za-zÀ-ÖØ-öø-ÿ ]{2,}");
+	}
+
 	// Método para verificar se o aluno é menor de idade (menos de 12 anos)
 	private boolean isMenorDeIdade(LocalDate dataNascimento) {
 		LocalDate hoje = LocalDate.now();
@@ -162,4 +164,25 @@ public class AlunoService {
 		Pattern pattern = Pattern.compile(emailRegex);
 		return pattern.matcher(email).matches();
 	}
+
+	private boolean isValidState(String state) {
+		String[] validStates = { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA",
+				"PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" };
+		return java.util.Arrays.asList(validStates).contains(state);
+	}
+
+	private boolean isValidCep(String cep) {
+		return cep.matches("\\d{8}");
+	}
+
+	private boolean isValidPhone(String phone) {
+		return phone.matches("\\(\\d{2}\\) \\d{4,5}-\\d{4}");
+	}
+
+	private boolean isValidRg(String rg) {
+		return rg.matches("\\d{2}\\.\\d{3}\\.\\d{3}-\\d{1}|\\d{9}");
+	}
+
+	
+
 }

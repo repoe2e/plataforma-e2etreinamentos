@@ -36,8 +36,8 @@ public class AlunoServiceTest {
 		MockitoAnnotations.openMocks(this);
 
 		InformacoesContato contato = new InformacoesContato();
-		contato.setTelefone("11999999999");
-		contato.setWhatsapp("11999999999");
+		contato.setTelefone("(11) 1234-5678");
+		contato.setWhatsapp("(11) 91234-5678");
 		contato.setEndereco("Alameda um");
 		contato.setNumero("123");
 		contato.setBairro("Centro");
@@ -47,8 +47,8 @@ public class AlunoServiceTest {
 
 		aluno = new Aluno();
 		aluno.setNomeCompleto("João Silva");
-		aluno.setCpf("12345678900");
-		aluno.setRg("123456789");
+		aluno.setCpf("69863004090");
+		aluno.setRg("254125484");
 		aluno.setEmail("joao@email.com");
 		aluno.setDataNascimento(LocalDate.of(1990, 5, 15));
 		aluno.setNacionalidade("Brasileiro");
@@ -92,7 +92,7 @@ public class AlunoServiceTest {
 
 	@Test
     public void testCadastrarAlunoCpfJaCadastrado() {
-        when(alunoRepository.existsByCpf("12345678900")).thenReturn(true);
+        when(alunoRepository.existsByCpf("69863004090")).thenReturn(true);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             alunoService.cadastrarAluno(aluno);
@@ -188,7 +188,7 @@ public class AlunoServiceTest {
 			alunoService.cadastrarAluno(aluno);
 		});
 
-		assertEquals("Telefone é obrigatório.", exception.getMessage());
+		assertEquals("Telefone é obrigatório, formato (xx) xxxx-xxxx.", exception.getMessage());
 	}
 
 	@Test
@@ -199,7 +199,7 @@ public class AlunoServiceTest {
 			alunoService.cadastrarAluno(aluno);
 		});
 
-		assertEquals("Whatsapp é obrigatório.", exception.getMessage());
+		assertEquals("WhatsApp é inválido, formato (xx) xxxxx-xxxx.", exception.getMessage());
 	}
 
 	@Test
@@ -210,12 +210,13 @@ public class AlunoServiceTest {
 			alunoService.cadastrarAluno(aluno);
 		});
 
-		assertEquals("Profissão é obrigatória.", exception.getMessage());
+		assertEquals("Profissão obrigatória.", exception.getMessage());
 	}
 
 	@Test
 	public void testCadastrarAlunoFormacaoAcademicaObrigatoria() {
 		aluno.setFormacaoAcademica(null);
+		aluno.setRg("12.345.678-9"); // RG válido no formato esperado
 
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
 			alunoService.cadastrarAluno(aluno);
