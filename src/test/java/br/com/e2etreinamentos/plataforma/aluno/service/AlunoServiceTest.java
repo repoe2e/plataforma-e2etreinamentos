@@ -87,7 +87,7 @@ public class AlunoServiceTest {
 			alunoService.cadastrarAluno(aluno);
 		});
 
-		assertEquals("CPF inválido. Deve conter exatamente 11 dígitos numéricos.", exception.getMessage());
+		assertEquals("CPF inexistente ou inválido. Deve conter exatamente 11 dígitos numéricos.", exception.getMessage());
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class AlunoServiceTest {
 			alunoService.cadastrarAluno(aluno);
 		});
 
-		assertEquals("CPF inválido. Deve conter exatamente 11 dígitos numéricos.", exception.getMessage());
+		assertEquals("CPF inexistente ou inválido. Deve conter exatamente 11 dígitos numéricos.", exception.getMessage());
 	}
 
 	@Test
