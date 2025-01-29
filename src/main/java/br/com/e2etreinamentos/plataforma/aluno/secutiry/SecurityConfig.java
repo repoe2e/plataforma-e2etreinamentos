@@ -1,9 +1,5 @@
 package br.com.e2etreinamentos.plataforma.aluno.secutiry;
 
-
-
-
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,12 +14,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error").permitAll() // Permite acesso público ao endpoint /error
-                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll() // Permite acesso ao Swagger
-                .requestMatchers("/api/**").authenticated() // Exige autenticação para endpoints sob /api
-                .anyRequest().denyAll() // Bloqueia todos os outros endpoints
+                .anyRequest().permitAll() // Permite acesso a todos os endpoints sem autenticação
             )
-            .csrf(csrf -> csrf.disable()); // Desabilita CSRF para simplificar (não recomendado para produção)
+            .csrf(csrf -> csrf.disable()); // Desabilita CSRF para simplificação (avaliar em produção)
 
         return http.build();
     }
