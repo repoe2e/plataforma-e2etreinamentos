@@ -5,6 +5,7 @@ package br.com.e2etreinamentos.plataforma.aluno.model;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +33,7 @@ public class Aluno {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore  // Isso irá ignorar o campo na serialização e na documentação do Swagger
     private Long id;
 
     @NotBlank(message = "Nome completo é obrigatório.")
