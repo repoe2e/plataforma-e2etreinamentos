@@ -162,14 +162,14 @@ public class AlunoService {
 	private boolean isMenorDeIdade(LocalDate dataNascimento) {
 		LocalDate hoje = LocalDate.now();
 		Period idade = Period.between(dataNascimento, hoje);
-		return idade.getYears() < 12;
+		return idade.getYears() <= 12;
 	}
 	
 	// Método para verificar se o aluno é menor de idade (menos de 12 anos)
 		private boolean isMaiorDeIdade(LocalDate dataNascimento) {
 			LocalDate hoje = LocalDate.now();
 			Period idade = Period.between(dataNascimento, hoje);
-			return idade.getYears() > 85;
+			return idade.getYears() >= 85;
 		}
 
 	// Método para validar o formato de e-mail

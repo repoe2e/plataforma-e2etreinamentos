@@ -84,7 +84,7 @@ public class MatriculaService {
 		}
 
 		int descricaoLength = matricula.getDescricaoTurma().trim().length();
-		if (descricaoLength < 5 || descricaoLength > 15) {
+		if (descricaoLength <= 5 || descricaoLength >= 15) {
 			throw new IllegalArgumentException("A descrição da turma deve ter entre 5 e 15 caracteres.");
 		}
 

@@ -31,7 +31,7 @@ public class UsuarioService {
 			throw new IllegalArgumentException("CPF já cadastrado.");
 		}
 
-		if (usuario.getCpf() == null || usuario.getCpf().trim().isEmpty() || usuario.getCpf().length() != 11) {
+		if (usuario.getCpf() == null || usuario.getCpf().trim().isEmpty() || !CpfUtils.isCpfValid(usuario.getCpf()) || usuario.getCpf().length() != 11) {
 			throw new IllegalArgumentException(
 					"CPF inexistente ou inválido. Deve conter exatamente 11 dígitos numéricos.");
 		}
@@ -52,9 +52,11 @@ public class UsuarioService {
 			throw new IllegalArgumentException("Senha em branco ou null.");
 		}
 
-		if (usuario.getSenha().length() < 10 && usuario.getSenha().length() < 15) {
+		if (usuario.getSenha().length() < 10 || usuario.getSenha().length() > 15) {
 			throw new IllegalArgumentException("Senha deve ter entre 10 a 15 digitos.");
-		} else if (!isValidSenha(usuario.getSenha())) {
+		} 
+		
+		if(!isValidSenha(usuario.getSenha())) {
 			throw new IllegalArgumentException(
 					"Formato de senha inválido. A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial");
 		}
@@ -80,7 +82,7 @@ public class UsuarioService {
 			throw new IllegalArgumentException("Senha em branco ou null.");
 		}
 
-		if (senha.length() < 10 && senha.length() < 15) {
+		if (senha.length() < 10 && senha.length() > 15) {
 			throw new IllegalArgumentException("Senha deve ter entre 10 a 15 digitos.");
 		}
 
