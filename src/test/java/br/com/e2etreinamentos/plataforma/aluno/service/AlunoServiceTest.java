@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import br.com.e2etreinamentos.plataforma.aluno.model.Aluno;
 import br.com.e2etreinamentos.plataforma.aluno.model.InformacoesContato;
 import br.com.e2etreinamentos.plataforma.aluno.repository.AlunoRepository;
+import br.com.e2etreinamentos.plataforma.aluno.utils.CpfUtils;
 
 public class AlunoServiceTest {
 
@@ -30,11 +31,13 @@ public class AlunoServiceTest {
 
 	private Aluno aluno;
 	private InformacoesContato informacoesContato;
+	
+	private String cpfCadastrado;
 
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
-
+		cpfCadastrado = CpfUtils.generateValidCpf();
 		InformacoesContato contato = new InformacoesContato();
 		contato.setTelefone("(11) 1234-5678");
 		contato.setWhatsapp("(11) 91234-5678");
@@ -47,7 +50,7 @@ public class AlunoServiceTest {
 
 		aluno = new Aluno();
 		aluno.setNomeCompleto("João Silva");
-		aluno.setCpf("69863004090");
+		aluno.setCpf(cpfCadastrado);
 		aluno.setRg("254125484");
 		aluno.setEmail("joao@email.com");
 		aluno.setDataNascimento(LocalDate.of(1990, 5, 15));
@@ -92,7 +95,7 @@ public class AlunoServiceTest {
 
 	@Test
     public void testCadastrarAlunoCpfJaCadastrado() {
-        when(alunoRepository.existsByCpf("69863004090")).thenReturn(true);
+        when(alunoRepository.existsByCpf(cpfCadastrado)).thenReturn(true);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             alunoService.cadastrarAluno(aluno);

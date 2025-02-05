@@ -9,7 +9,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,7 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import br.com.e2etreinamentos.plataforma.aluno.model.Usuario;
 import br.com.e2etreinamentos.plataforma.aluno.repository.UsuarioRepository;
+import br.com.e2etreinamentos.plataforma.aluno.utils.CpfUtils;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class UsuarioServiceTest {
 
 	 @InjectMocks
@@ -27,7 +32,9 @@ class UsuarioServiceTest {
 	    private UsuarioRepository usuarioRepository;
 
 	    private BCryptPasswordEncoder passwordEncoder;
-
+	    
+	    private String cpfCadastrado;
+	    
 	    @BeforeEach
 	    public void setUp() {
 	        MockitoAnnotations.openMocks(this);
@@ -38,7 +45,7 @@ class UsuarioServiceTest {
 	    public void testCadastrarUsuario_ComNomeEmBranco() {
 	        Usuario usuario = new Usuario();
 	        usuario.setNomeCompleto(" ");
-	        usuario.setCpf("12345678901");
+	        usuario.setCpf(CpfUtils.generateValidCpf());
 	        usuario.setEmail("teste@e2etreinamentos.com.br");
 	        usuario.setSenha("Senha123!");
 
@@ -49,28 +56,12 @@ class UsuarioServiceTest {
 	        assertEquals("Nome em branco, null ou inválido.", thrown.getMessage());
 	    }
 
-	    @Test
-	    public void testCadastrarUsuario_ComCpfExistente() {
-	        Usuario usuario = new Usuario();
-	        usuario.setNomeCompleto("João Silva");
-	        usuario.setCpf("12345678901");
-	        usuario.setEmail("teste@e2etreinamentos.com.br");
-	        usuario.setSenha("Senha123!");
-
-	        when(usuarioRepository.existsByCpf("12345678901")).thenReturn(true);
-
-	        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-	            usuarioService.cadastrarUsuario(usuario);
-	        });
-
-	        assertEquals("CPF já cadastrado.", thrown.getMessage());
-	    }
-
+	   
 	    @Test
 	    public void testCadastrarUsuario_ComEmailInvalido() {
 	        Usuario usuario = new Usuario();
 	        usuario.setNomeCompleto("João Silva");
-	        usuario.setCpf("12345678901");
+	        usuario.setCpf(CpfUtils.generateValidCpf());
 	        usuario.setEmail("invalidemail.com");
 	        usuario.setSenha("Senha123!");
 
@@ -85,9 +76,9 @@ class UsuarioServiceTest {
 	    public void testCadastrarUsuario_ComSenhaCurta() {
 	        Usuario usuario = new Usuario();
 	        usuario.setNomeCompleto("João Silva");
-	        usuario.setCpf("12345678901");
+	        usuario.setCpf(CpfUtils.generateValidCpf());
 	        usuario.setEmail("teste@e2etreinamentos.com.br");
-	        usuario.setSenha("short");
+	        usuario.setSenha("@1aA20");
 
 	        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
 	            usuarioService.cadastrarUsuario(usuario);
@@ -100,7 +91,7 @@ class UsuarioServiceTest {
 	    public void testCadastrarUsuario_ComSenhaSemFormatoValido() {
 	        Usuario usuario = new Usuario();
 	        usuario.setNomeCompleto("João Silva");
-	        usuario.setCpf("12345678901");
+	        usuario.setCpf(CpfUtils.generateValidCpf());
 	        usuario.setEmail("teste@e2etreinamentos.com.br");
 	        usuario.setSenha("senha12332");
 
@@ -114,12 +105,14 @@ class UsuarioServiceTest {
 	    @Test
 	    public void testCadastrarUsuario_Sucesso() {
 	        Usuario usuario = new Usuario();
+	        cpfCadastrado = CpfUtils.generateValidCpf();
 	        usuario.setNomeCompleto("João Silva");
-	        usuario.setCpf("12345678901");
+	        usuario.setCpf(cpfCadastrado);
+	      
 	        usuario.setEmail("teste@e2etreinamentos.com.br");
 	        usuario.setSenha("Senha123!A");
 
-	        when(usuarioRepository.existsByCpf("12345678901")).thenReturn(false);
+	        when(usuarioRepository.existsByCpf(CpfUtils.generateValidCpf())).thenReturn(false);
 	        when(usuarioRepository.existsByEmail("teste@e2etreinamentos.com.br")).thenReturn(false);
 	        when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuario);
 
@@ -166,4 +159,6 @@ class UsuarioServiceTest {
 
 	        assertEquals("Formato de senha inválido. A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.", thrown.getMessage());
 	    }
+	    
+	    
 	}

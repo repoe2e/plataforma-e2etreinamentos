@@ -31,6 +31,7 @@ public class Matricula {
 
 	private Long cursoId;
 
+	@JsonIgnore  // Isso irá ignorar o campo na serialização e na documentação do Swagger
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataMatricula;
 

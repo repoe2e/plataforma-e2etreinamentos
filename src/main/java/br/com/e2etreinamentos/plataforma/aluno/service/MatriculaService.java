@@ -36,7 +36,8 @@ public class MatriculaService {
 	private void validarCampos(Matricula matricula) {
 		LocalDate hoje = LocalDate.now();
 
-		if (matricula.getCpfAluno() == null ||matricula.getCpfAluno().trim().isEmpty()|| !alunoRepository.existsByCpf(matricula.getCpfAluno()) ) {
+		if (matricula.getCpfAluno() == null || matricula.getCpfAluno().trim().isEmpty()
+				|| !alunoRepository.existsByCpf(matricula.getCpfAluno())) {
 			throw new IllegalArgumentException("CPF do aluno não cadastrado, não informado branco ou null.");
 		}
 
@@ -48,8 +49,8 @@ public class MatriculaService {
 		if (!isValidEmail(matricula.getEmailAluno())) {
 			throw new IllegalArgumentException("E-mail do aluno não cadastrado.");
 		}
-		
-		if(!cursoRepository.existsById(matricula.getCursoId())) {
+
+		if (!cursoRepository.existsById(matricula.getCursoId())) {
 			throw new IllegalArgumentException("ID não cadastrado como um curso.");
 		}
 
@@ -67,16 +68,28 @@ public class MatriculaService {
 					"A previsão de início das aulas não pode ser menor que a data da matrícula.");
 		}
 
-		if (matricula.getPrevisaoEncerramentoAulas() != null) {
-			if (matricula.getPrevisaoEncerramentoAulas().isBefore(hoje)) {
-				throw new IllegalArgumentException(
-						"A previsão de encerramento das aulas não pode ser menor que a data da matrícula.");
-			}
-			if (matricula.getPrevisaoInicioAulas() != null
-					&& matricula.getPrevisaoEncerramentoAulas().isBefore(matricula.getPrevisaoInicioAulas())) {
-				throw new IllegalArgumentException(
-						"A previsão de encerramento das aulas não pode ser menor que a previsão de início das aulas.");
-			}
+	
+
+
+		if (matricula.getPrevisaoInicioAulas() == null) {
+			throw new IllegalArgumentException(
+					"A previsão de Inicio das aulas não pode null ou em branco.");
+		}
+		
+		if (matricula.getPrevisaoEncerramentoAulas() == null) {
+			throw new IllegalArgumentException(
+					"A previsão de encerramento das aulas não pode null ou em branco.");
+		}
+		
+		if (matricula.getPrevisaoEncerramentoAulas().isBefore(hoje)) {
+			throw new IllegalArgumentException(
+					"A previsão de encerramento das aulas não pode ser menor que a data da matrícula.");
+		}
+		
+		if (matricula.getPrevisaoInicioAulas() != null
+				&& matricula.getPrevisaoEncerramentoAulas().isBefore(matricula.getPrevisaoInicioAulas())) {
+			throw new IllegalArgumentException(
+					"A previsão de encerramento das aulas não pode ser menor que a previsão de início das aulas.");
 		}
 
 		if (matricula.getDescricaoTurma() == null || matricula.getDescricaoTurma().trim().isEmpty()) {

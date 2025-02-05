@@ -27,14 +27,15 @@ public class AlunoService {
 			throw new IllegalArgumentException("Nome completo é obrigatório.");
 		}
 
+		if (alunoRepository.existsByCpf(aluno.getCpf())) {
+			throw new IllegalArgumentException("CPF já cadastrado.");
+		}
 		// Validação do CPF
 		if (aluno.getCpf() == null || aluno.getCpf().length() != 11 || !aluno.getCpf().matches("\\d{11}")
 				|| !CpfUtils.isCpfValid(aluno.getCpf())) {
 			throw new IllegalArgumentException("CPF inexistente ou inválido. Deve conter exatamente 11 dígitos numéricos.");
 		}
-		if (alunoRepository.existsByCpf(aluno.getCpf())) {
-			throw new IllegalArgumentException("CPF já cadastrado.");
-		}
+		
 
 		// Validação do E-mail
 		if (aluno.getEmail() == null || aluno.getEmail().trim().isEmpty() || !isValidEmail(aluno.getEmail())) {
